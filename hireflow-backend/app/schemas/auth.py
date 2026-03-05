@@ -5,9 +5,11 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 class UserRole(str, Enum):
-    admin = "admin"
+    candidate = "candidate"
     hr = "hr"
-    user = "user"
+    recruiter = "recruiter"
+    company_admin = "company_admin"
+    super_admin = "super_admin"
 
 class RegisterSchema(BaseModel):
     name: str = Field(..., min_length=3, max_length=72)
