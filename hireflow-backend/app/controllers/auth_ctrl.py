@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from app.database import db
 from app.schemas.auth import RegisterSchema, LoginSchema
 from app.utils.security import verify_password, hash_password
+from app.utils.security import verify_password, create_access_token
 
 
 async def register_user(user: RegisterSchema):
@@ -31,8 +32,17 @@ async def login_user(user: LoginSchema):
     if not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    # Create token
+    token = create_access_token(
+        data={
+            "sub": db_user["email"],
+            "role": db_user["role"]
+        }
+    )
+
     return {
-        "message": "Login successful",
+        "access_token": token,
+        "token_type": "bearer",
         "email": db_user["email"],
         "role": db_user["role"]
     }
